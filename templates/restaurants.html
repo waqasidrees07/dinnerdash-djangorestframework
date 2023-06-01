@@ -1,0 +1,35 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Products{% endblock title %}
+{% block main-content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-2 border-end">
+                <ul class="list-unstyled">
+                    <li class="d-grid"><a href="{% url 'dashboard' %}" class="btn ">Orders</a></li>
+                    <li class="d-grid"><a href="{% url 'add-product' %}" class="btn ">Add Product</a></li>
+                    <li class="d-grid"><a href="{% url 'products' %}" class="btn ">Products</a></li>
+                    <li class="d-grid"><a href="{% url 'add-category' %}" class="btn ">Add Category</a></li>
+                    <li class="d-grid"><a href="{% url 'category' %}" class="btn">Categories</a></li>
+                    <li class="d-grid"><a href="{% url 'add-restaurant' %}" class="btn ">Add Restaurant</a></li>
+                    <li class="d-grid"><a href="{% url 'restaurants' %}" class="btn {{ active }}">Restaurants</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 offset-sm-1">
+                {% for restaurant in restaurants %}
+                    <div class="row mb-3">
+                        <div class="col-sm-7">
+                            <h3>Branch No.{{ forloop.counter }}</h3>
+                            <p>Title: {{ restaurant.title }}</p>
+                            <p>Address: {{ restaurant.address }}</p>
+                            <p>City: {{ restaurant.city }}</p>
+                            <a href="{% url 'update-restaurants' restaurant.id %}">
+                                <button type="submit" class="btn btn-primary mb-3">Update</button>
+                            </a>
+                        </div>
+                    </div><hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}

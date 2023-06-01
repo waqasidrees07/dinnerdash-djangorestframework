@@ -1,0 +1,28 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Products{% endblock title %}
+{% block main-content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-2 border-end">
+                <ul class="list-unstyled">
+                    <li class="d-grid"><a href="{% url 'dashboard' %}" class="btn">Orders</a></li>
+                    <li class="d-grid"><a href="{% url 'add-product' %}" class="btn ">Add Product</a></li>
+                    <li class="d-grid"><a href="{% url 'products' %}" class="btn">Products</a></li>
+                    <li class="d-grid"><a href="{% url 'add-category' %}" class="btn ">Add Category</a></li>
+                    <li class="d-grid"><a href="{% url 'category' %}" class="btn {{ active }}">Categories</a></li>
+                    <li class="d-grid"><a href="{% url 'add-restaurant' %}" class="btn ">Add Restaurant</a></li>
+                    <li class="d-grid"><a href="{% url 'restaurants' %}" class="btn ">Restaurants</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 offset-sm-1">
+                <h1 class="text-align-center">All Categories</h1>
+                {% for category in categories %}
+                    <div class="row mb-3">
+                        <p>Category: <strong>{{ category }}</strong></p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}

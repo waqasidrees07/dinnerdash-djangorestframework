@@ -1,0 +1,85 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+
+{% block main-content %}
+    <!-- 1st Product Slider -->
+    <div class="m-3">
+        <h2><a class="text-decoration-none text-dark" href="{% url 'burger' %}">Burger</a></h2>
+        <!-- Slider 1 -->
+        <div class="owl-carousel" id="slider1">
+            {% for item in burger %}
+                <a href="{% url 'product-detail' item.id %}" class="btn">
+                    <div class="item shadow-sm">
+                        <img src=" {{ item.image.url }}" alt="" height="200px">
+                        <span class="fw-bold">{{ item.title | title}}</span><br>
+                        <span class="fs-5">Rs. {{ item.price }}</span><br>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    <!-- End 1st Product Slider -->
+
+
+
+    <!-- 2nd Product Slider -->
+    <div class="mx-3">
+        <h2><a class="text-decoration-none text-dark" href="{% url 'pizza' %}">Pizza</a></h2>
+        <!-- Slider 2 -->
+        <div class="owl-carousel" id="slider2">
+            {% for item in pizza %}
+                <a href="{% url 'product-detail' item.id %}" class="btn">
+                    <div class="item shadow-sm">
+                        <img src="{{ item.image.url }}" alt="" height="200px">
+                        <span class="fw-bold">{{ item.title | title}}</span><br>
+                        <span class="fs-5">Rs. {{ item.price }}</span><br>
+                    </div>
+
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    <!-- End 2nd Product Slider -->
+
+    <!-- 3rd Product Slider -->
+    <div class="mx-3">
+        <h2><a class="text-decoration-none text-dark" href="{% url 'sandwich' %}">Sandwich</a></h2>
+        <!-- Slider 3 -->
+        <div class="owl-carousel" id="slider3">
+            {% for item in sandwich %}
+                <a href="{% url 'product-detail' item.id %}" class="btn">
+                    <div class="item shadow-sm">
+                        <img src="{{ item.image.url }}" alt="" height="200px">
+                        <span class="fw-bold">{{ item.title | title }}</span><br>
+                        <span class="fs-5">Rs. {{ item.price }}</span><br>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <hr>
+    <!-- End 3rd Product Slider -->
+
+    <!-- 4th Product Slider -->
+    <div class="mx-3">
+        <h2><a class="text-decoration-none text-dark" href="{% url 'shakes' %}">Shakes</a></h2>
+        <!-- Slider 4 -->
+        <div class="owl-carousel " id="slider3">
+            {% for item in shakes %}
+                <a href="{% url 'product-detail' item.id %}" class="btn">
+                    <div class="item shadow-sm">
+                        <img src="{{ item.image.url }}" alt="" height="200px">
+                        <span class="fw-bold">{{ item.title | title }}</span><br>
+                        <span class="fs-5">Rs. {{ item.price }}</span><br>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- End 4th Product Slider -->
+
+{% endblock main-content %}
+

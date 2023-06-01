@@ -1,0 +1,30 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Product Detail{% endblock title %}
+{% block main-content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-6 text-center align-self-center">
+                <img src="{{ Product.image.url }}" alt="" class="img-fluid img-thumbnail">
+            </div>
+            <div class="col-sm-5 offset-sm-1">
+                <h2>{{ Product.title|title }}</h2>
+                <h4><small class="fw-bold">Rs. {{ Product.price }}</small></h4>
+                <h4><small>Category: {{ Product.category }}</small></h4>
+                <form action="/add-to-cart" class="d-inline">
+                    <input type="hidden" name="prod_id" value={{ Product.id }} id="prod_id">
+                    <button type="submit" class="btn btn-primary shadow px-5 py-2 fw-bold">Add to Cart</button>
+                </form>
+                <!--<form action="/checkout" class="d-inline">
+                    <input type="hidden" name="prod_id" id="prod_id">
+                    <button type="submit" class="btn btn-success shadow px-5 py-2 fw-bold">Buy Now</button>
+                </form>-->
+                <br><br>
+                <h2 class="fw-bold">Description</h2>
+                <P>{{ Product.description | title }}</P>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}

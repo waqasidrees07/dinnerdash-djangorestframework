@@ -1,0 +1,51 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Products{% endblock title %}
+{% block main-content %}
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-2 border-end">
+                <ul class="list-unstyled">
+                    <li class="d-grid"><a href="{% url 'dashboard' %}" class="btn ">Orders</a></li>
+                    <li class="d-grid"><a href="{% url 'add-product' %}" class="btn ">Add Product</a></li>
+                    <li class="d-grid"><a href="{% url 'products' %}" class="btn {{ active }}">Products</a></li>
+                    <li class="d-grid"><a href="{% url 'add-category' %}" class="btn ">Add Category</a></li>
+                    <li class="d-grid"><a href="{% url 'category' %}" class="btn">Categories</a></li>
+                    <li class="d-grid"><a href="{% url 'add-restaurant' %}" class="btn ">Add Restaurant</a></li>
+                    <li class="d-grid"><a href="{% url 'restaurants' %}" class="btn ">Restaurants</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 offset-sm-1">
+             <div class="mb-5 w-50">
+                <form action="{% url 'search-products' %}" class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search by title"
+                           aria-label="Search" name="search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+                {% for products in product %}
+                    <div class="row mb-3">
+                        <div class="col-sm-2">
+                            <img src="{{ products.image.url }}" class="img-fluid" height="150" width="150">
+                        </div>
+                        <div class="col-sm-7">
+                            <p><strong>Product ID: {{ products.id }}</strong></p>
+                            <p>Title: <strong>{{ products.title | title }}</strong></p>
+                            <p>Description: {{ products.description | title }}</p>
+                            <p>Price: {{ products.price }}</p>
+                            <p>Category: {{ products.category }}</p>
+                            <p>Restaurant: {{ products.restaurant }}</p>
+                            <a class="text-decoration-none" href="{% url 'update-product' products.id %}">
+                                <button type="submit" class="btn btn-primary mb-3">Update</button>
+                            </a>
+                            <a href="{% url 'delete-product' products.id %}">
+                                <button type="submit" class="btn btn-danger mb-3">Delete</button>
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}

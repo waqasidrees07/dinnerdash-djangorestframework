@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Add Product{% endblock title %}
+{% block main-content %}
+    <h1 style="text-align: center">Add a New Restaurant</h1>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-sm-2 border-end">
+                <ul class="list-unstyled">
+                    <li class="d-grid"><a href="{% url 'dashboard' %}" class="btn">Orders</a></li>
+                    <li class="d-grid"><a href="{% url 'add-product' %}" class="btn">Add Product</a></li>
+                    <li class="d-grid"><a href="{% url 'products' %}" class="btn">Products</a></li>
+                    <li class="d-grid"><a href="{% url 'add-category' %}" class="btn">Add Category</a></li>
+                    <li class="d-grid"><a href="{% url 'category' %}" class="btn">Categories</a></li>
+                    <li class="d-grid"><a href="{% url 'add-restaurant' %}" class="btn {{ active }}">Add Restaurant</a>
+                    </li>
+                    <li class="d-grid"><a href="{% url 'restaurants' %}" class="btn">Restaurants</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-8 offset-sm-1">
+                <form action="" method="post" novalidate>
+                    {% csrf_token %}
+                    {% for fm in form %}
+                        <div class="form-group col-lg-6 mb-3">
+                            {{ fm.label_tag }} {{ fm }} <small class="text-danger">{{ fm.errors | striptags }} </small>
+                            <br>
+                        </div>
+                    {% endfor %}
+                    <div class="col-12 mt-3">
+                        <button type="submit" class="btn btn-primary mb-3">Save</button>
+                    </div>
+                </form>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p {% if message.tags %}
+                            class="alert alert-{{ message.tags }} mb-5" {% endif %}> {{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock main-content %}
