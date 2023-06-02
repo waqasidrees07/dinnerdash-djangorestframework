@@ -101,5 +101,38 @@
             });
         });
     </script>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<h1>Facebook Login</h1>
+
+    <button id="facebook-login-btn">Login with Facebook</button>
+
+    <script>
+        function loginWithFacebook() {
+            // Replace {YOUR_BACKEND_API_URL} with the actual URL of your backend API endpoint
+            const apiUrl = '127.0.1:8000/accounts/facebook/login/';
+
+            // Open Facebook login popup
+            const popup = window.open(apiUrl, 'Facebook Login', 'width=600,height=600');
+
+            // Check for successful login or error in the popup
+            const interval = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(interval);
+                    // Perform necessary actions after login (e.g., redirect or reload the page)
+                    // You can handle the response from the backend as per your requirements
+                    window.location.reload();
+                }
+            }, 500);
+        }
+
+        const facebookLoginBtn = document.getElementById('facebook-login-btn');
+        facebookLoginBtn.addEventListener('click', loginWithFacebook);
+    </script>
+
 </body>
 </html>

@@ -12,11 +12,20 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import SignupSerializer, VerifyEmailSerializer, LoginSerializer
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from.models import MyUser
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.urls import reverse
+from .serializers import PasswordResetSerializer
+from django.core.mail import send_mail
+from django.utils.encoding import force_str
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ChangePasswordSerializer
+import uuid
 
 
 class ActivateView(View):
@@ -130,3 +139,60 @@ class LoginView(APIView):
         else:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
+class ForgotPasswordView(generics.GenericAPIView):
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request):
+        email = request.data.get('email')
+        try:
+            user = MyUser.objects.get(email=email)
+        except MyUser.DoesNotExist:
+            return Response({'detail': 'Invalid email.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generate password reset token
+        token_generator = default_token_generator
+        token = token_generator.make_token(user)
+
+        # Send password reset email with the token
+        reset_url = request.build_absolute_uri(reverse('password_reset_confirm', kwargs={'token': token}))
+        send_mail(
+            f'Password Reset Mail',
+            f'{reset_url}',
+            'waqasidrees15@gmail.com',
+            [f'{email}'],
+            fail_silently=False,
+        )
+        return Response({'detail': 'Password reset email sent.'})
+
+
+class PasswordResetConfirm(PasswordResetConfirmView):
+    serializer_class = PasswordResetSerializer
+    success_url = '/password-reset-complete/'  # Set the URL for password reset complete
+
+    def get(self, request, *args, **kwargs):
+        # Verify the password reset token
+        token = kwargs['token']
+        uid = kwargs['uidb64']
+        try:
+            uid = force_str(urlsafe_base64_decode(uid))
+            user = MyUser.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, MyUser.DoesNotExist):
+            user = None
+
+        if user is None or not default_token_generator.check_token(user, token):
+            return Response({'detail': 'Invalid password reset link.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        # Reset the user's password
+        return super().post(request, *args, **kwargs)
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+    serializer_class = ChangePasswordSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user

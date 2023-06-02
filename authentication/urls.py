@@ -75,5 +75,9 @@ urlpatterns = [
     path("signup/", views.SignUpView.as_view()),
     path("email-verification/", views.VerifyEmailView.as_view(), name="email-verification"),
     path("sign-in/", views.LoginView.as_view(), name="sign-in"),
+    path('forgot-password/', views.ForgotPasswordView.as_view(), name='forgot_password'),
+    path('password-reset-confirm/<slug:uidb64>/<slug:token>/', views.PasswordResetConfirm.as_view(), name='password_reset_confirm'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
+    # path('accounts/facebook/login/', views.FacebookLogin.as_view(), name='facebook_login'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
