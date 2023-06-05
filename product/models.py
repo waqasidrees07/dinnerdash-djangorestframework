@@ -29,7 +29,7 @@ def validate_positive(value):
 class Product(models.Model):
     title = models.CharField(max_length=258, unique=True)
     description = models.TextField(max_length=998)
-    price = models.IntegerField(validators=[validate_positive])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[validate_positive])
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(
         upload_to="Product Images", null=True, blank=True, default="default.jpg"

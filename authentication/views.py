@@ -25,7 +25,6 @@ from django.core.mail import send_mail
 from django.utils.encoding import force_str
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ChangePasswordSerializer
-import uuid
 
 
 class ActivateView(View):
@@ -92,7 +91,7 @@ class SignUpView(APIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'detail': 'Signup successful. Please check your email for verification.'})
+            return redirect("email-verification")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -117,7 +116,7 @@ class VerifyEmailView(APIView):
                 user_profile.save()
                 return Response({'detail': 'Email verification successful.'})
             else:
-                return Response({'detail': 'Invalid verification code.', "user": user_profile.verification_code}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': 'Invalid verification code.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"detail": "Nothing"}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -135,9 +134,9 @@ class LoginView(APIView):
         if user is not None:
             # Create or retrieve token for the authenticated user
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
+            return Response({"details": "Login Successfully", 'token': token.key})
         else:
-            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'detail': 'User not found'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ForgotPasswordView(generics.GenericAPIView):
@@ -150,20 +149,23 @@ class ForgotPasswordView(generics.GenericAPIView):
         except MyUser.DoesNotExist:
             return Response({'detail': 'Invalid email.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Generate password reset token
-        token_generator = default_token_generator
-        token = token_generator.make_token(user)
+        try:
+            # Generate password reset token
+            token_generator = default_token_generator
+            token = token_generator.make_token(user)
 
-        # Send password reset email with the token
-        reset_url = request.build_absolute_uri(reverse('password_reset_confirm', kwargs={'token': token}))
-        send_mail(
-            f'Password Reset Mail',
-            f'{reset_url}',
-            'waqasidrees15@gmail.com',
-            [f'{email}'],
-            fail_silently=False,
-        )
-        return Response({'detail': 'Password reset email sent.'})
+            # Send password reset email with the token
+            reset_url = request.build_absolute_uri(reverse('password_reset_confirm', kwargs={'token': token}))
+            send_mail(
+                f'Password Reset Mail',
+                f'{reset_url}',
+                'waqasidrees15@gmail.com',
+                [f'{email}'],
+                fail_silently=False,
+            )
+            return Response({'detail': 'Password reset email sent.'})
+        except:
+            return Response({"details": "token or uid not found"})
 
 
 class PasswordResetConfirm(PasswordResetConfirmView):

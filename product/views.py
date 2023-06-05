@@ -4,23 +4,33 @@ from django.views.generic import View
 from .forms import AddProductForm, AddCategoryForm, AddRestaurantForm
 from django.contrib import messages
 from authentication.views import SuperuserRequiredMixin
+from rest_framework.views import Response, APIView
+from .serializer import AddRestaurantSerializer, GetRestaurantSerializer, GetProductSerializer, AddProductSerializer
+from rest_framework import status
+
 
 # Create your views here.
 
 
-class ProductView(View):
+class ProductView(APIView):
     def get(self, request):
         burger = Product.objects.filter(category__category__contains="Burger")
         pizza = Product.objects.filter(category__category__contains="Pizza")
         sandwich = Product.objects.filter(category__category__contains="Sandwich")
         shakes = Product.objects.filter(category__category__contains="Shakes")
+
+        burger_serializer = GetProductSerializer(burger)
+        pizza_serializer = GetProductSerializer(pizza)
+        sandwich_serializer = GetProductSerializer(sandwich)
+        shakes_serializer = GetProductSerializer(shakes)
         context = {
-            "burger": burger,
-            "pizza": pizza,
-            "sandwich": sandwich,
-            "shakes": shakes,
+            "burger": burger_serializer.data,
+            "pizza": pizza_serializer.data,
+            "sandwich": sandwich_serializer.data,
+            "shakes": shakes_serializer.data,
+
         }
-        return render(request, "home.html", context)
+        return Response({"products": context})
 
 
 class BurgerView(View):
@@ -59,39 +69,16 @@ class ProductDetailView(View):
         return render(request, "product_detail.html", {"Product": product})
 
 
-class AddProductView(SuperuserRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
-        form = AddProductForm()
-        return render(
-            request, "add_product.html", {"form": form, "active": "btn-primary"}
-        )
+class AddProductView(APIView):
+    serializer_class = AddProductSerializer
 
     def post(self, request, *args, **kwargs):
-        form = AddProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            description = form.cleaned_data["description"]
-            price = form.cleaned_data["price"]
-            category = form.cleaned_data["category"]
-            image = form.cleaned_data["image"]
-            restaurant = form.cleaned_data["restaurant"]
-            reg, created = Product.objects.get_or_create(
-                title=title,
-                description=description,
-                price=price,
-                image=image,
-                category=category,
-                restaurant=restaurant,
-            )
-            reg.save()
-            messages.success(request, "Congratulations!! Product Added Successfully...")
-            return redirect("/add-product")
-        else:
-            form = AddProductForm()
-            messages.error(request, "Price must be greater than 0")
-        return render(
-            request, "add_product.html", {"form": form, "active": "btn-primary"}
-        )
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Product Added Successfully", "product": serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UpdateProductView(SuperuserRequiredMixin, View):
@@ -170,42 +157,18 @@ class CategoryView(SuperuserRequiredMixin, View):
         )
 
 
-class AddRestaurantView(SuperuserRequiredMixin, View):
-    def get(self, request):
-        form = AddRestaurantForm()
-        return render(
-            request,
-            "add_restaurant.html",
-            {"form": form, "active": "btn-primary"},
-        )
+class AddRestaurantView(APIView):
+    serializer_class = AddRestaurantSerializer
 
     def post(self, request):
-        form = AddRestaurantForm(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            address = form.cleaned_data["address"]
-            city = form.cleaned_data["city"]
-            reg = Restaurant(title=title, address=address, city=city)
-            reg.save()
-            messages.success(request, "Congratulation!! Restaurant Added Successfully")
-        else:
-            form = AddRestaurantForm
-        return render(
-            request,
-            "add_restaurant.html",
-            {"form": form, "active": "btn-primary"},
-        )
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'detail': 'Restaurant Added successfully', "restaurant": serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateRestaurantView(SuperuserRequiredMixin, View):
-    def get(self, request, pk):
-        restaurant = Restaurant.objects.get(pk=pk)
-        form = AddRestaurantForm(instance=restaurant)
-        return render(
-            request,
-            "add_restaurant.html",
-            {"form": form, "active": "btn-primary"},
-        )
+class UpdateRestaurantView(APIView):
 
     def post(self, request, pk):
         restaurant = Restaurant.objects.get(pk=pk)
@@ -228,14 +191,11 @@ class UpdateRestaurantView(SuperuserRequiredMixin, View):
         )
 
 
-class RestaurantsView(SuperuserRequiredMixin, View):
+class RestaurantsView(APIView):  # Need SuperuserLogin
     def get(self, request):
         restaurants = Restaurant.objects.all()
-        return render(
-            request,
-            "restaurants.html",
-            {"restaurants": restaurants, "active": "btn-primary"},
-        )
+        serializer = GetRestaurantSerializer(restaurants, many=True)
+        return Response(serializer.data)
 
 
 class DHABranchView(View):

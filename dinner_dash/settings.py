@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "order",
     "userprofile",
     "dinner_dash",
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

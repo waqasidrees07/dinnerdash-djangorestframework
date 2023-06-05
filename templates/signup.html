@@ -133,6 +133,20 @@
         const facebookLoginBtn = document.getElementById('facebook-login-btn');
         facebookLoginBtn.addEventListener('click', loginWithFacebook);
     </script>
+<br>
+<br>
+<br>
+    <form action="http://127.0.0.1:8000/add-restaurant/" method="post">
+        <label for="title">title</label><br>
+        <input type="text" id="title" name="title" required><br>
 
+        <label for="address">Address</label><br>
+        <input type="text" id="address" name="address" required><br>
+
+        <label for="city">City</label><br>
+        <input type="text" id="city" name="city" required><br>
+        <button>Restaurants</button>
+    </form>
+<!--<a href="http://127.0.0.1:8000/restaurants/" target="_blank">All Restaurants</a>-->
 </body>
 </html>

@@ -5,11 +5,11 @@ from django.core.mail import send_mail
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    verification_code = serializers.CharField(max_length=6, read_only=True)
+    # verification_code = serializers.CharField(max_length=6, read_only=True)
 
     class Meta:
         model = MyUser
-        fields = "__all__"
+        fields = ["username", "email", "password"]
 
     def create(self, validated_data):
         # Generate a random verification code
@@ -34,7 +34,6 @@ class SignupSerializer(serializers.ModelSerializer):
             fail_silently=False,
         )
         return user
-
 
 
 class VerifyEmailSerializer(serializers.Serializer):
