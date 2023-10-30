@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#7a)w!wctkx6(%)ur=f7rf80pcg#vub2==3)))k%wk&4v&qgts"
+# SECRET_KEY = "django-insecure-#7a)w!wctkx6(%)ur=f7rf80pcg#vub2==3)))k%wk&4v&qgts"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -92,7 +92,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "dinnerdash_rest",
         "USER": "root",
-        "PASSWORD": "waqas@123HFD",
+        "PASSWORD": "",
         "HOST": "localhost",
         "PORT": "3306",
     }
@@ -156,10 +156,10 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Email Sending Settings
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com."
+EMAIL_HOST = ""
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "waqasidrees15@gmail.com"
-EMAIL_HOST_PASSWORD = "ihepmprpryapsums"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
